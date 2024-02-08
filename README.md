@@ -1,2 +1,2 @@
 # docs
-MKDOCS implementation of documentation
+To run localy `mkdocs serve`
