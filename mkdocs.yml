@@ -8,6 +8,7 @@ nav:
 
 theme:
   logo: assets/logo.svg
+  favicon: assets/favicon.ico
   name: material
   features:
     - navigation.tabs
