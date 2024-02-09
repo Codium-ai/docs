@@ -7,13 +7,15 @@ See [here](https://github.com/Codium-ai/pr-agent/blob/main/docs/CUSTOM_SUGGESTIO
 
 ### Codiumate
 #### VSCode
-- An update goers here
+- An update goers here if no update remove the section
 
 #### JetBrains
-- An update goers here
+- An update goers here if no update remove the section
 
 ### AlphaCodium
-- An update goers here
+- An update goers here if no update remove the section
+
+---
 
 ## Jan 17, 2024
 ### PR-Agent
@@ -30,22 +32,14 @@ pr_commands = [
 Meaning that by default, for each PR the `describe`, `review`, and `improve` tools will be triggered automatically, and the `improve` tool will present the suggestions in a single comment.  
 You can of course overwrite these defaults by adding a `.pr_agent.toml` file to your repo. See [here](https://github.com/Codium-ai/pr-agent/blob/main/Usage.md#working-with-github-app).
 
-### Codiumate
-#### VSCode
-- An update goers here
-
-#### JetBrains
-- An update goers here
-
-### AlphaCodium
-- An update goers here
-
+---
 
 ## Links
-
-[![Join our Discord community](https://raw.githubusercontent.com/Codium-ai/codiumai-vscode-release/main/media/docs/Joincommunity.png)](https://discord.gg/kG35uSHDBc){:target="_blank"}
 
 - [Discord community](https://discord.gg/kG35uSHDBc{:target="_blank"})
 - [CodiumAI website](https://codium.ai{:target="_blank"})
 - [Blog](https://www.codium.ai/blog/{:target="_blank"})
 - [Troubleshooting](https://www.codium.ai/blog/technical-faq-and-troubleshooting/{:target="_blank"})
+
+[![Join our Discord community](https://raw.githubusercontent.com/Codium-ai/codiumai-vscode-release/main/media/docs/Joincommunity.png)](https://discord.gg/kG35uSHDBc){:target="_blank"}
+

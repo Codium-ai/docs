@@ -56,7 +56,7 @@ Use one of the commands in a PR comment to get more insights.
 ## Benefits of PR-Agent
 
 - **Quick and affordable** answer retrieval (~30 seconds). Each tool (review, improve, ask, ...) has a single GPT-4 call, no more.
-- **Any PR size*** can be effectively used in as a context thanks uur compression strategy.
+- **Any PR size** can be effectively used in as a context thanks uur compression strategy.
 - **Each command is modular** and can be controlled with shared configuration file. 
 - **Multiple git providers** GitHub, Gitlab, Bitbucket are supported.
 - **Multiple platforms** to use the commands (CLI, GitHub Action, GitHub App, Docker, ...) are supported.
@@ -609,11 +609,12 @@ https://openai.com/enterprise-privacy
 When using PR-Agent Pro 💎, hosted by CodiumAI, we will not store any of your data, nor will we use it for training.
 You will also benefit from an OpenAI account with zero data retention.
 
+---
+
 ## Links
-
-[![Join our Discord community](https://raw.githubusercontent.com/Codium-ai/codiumai-vscode-release/main/media/docs/Joincommunity.png)](https://discord.gg/kG35uSHDBc){:target="_blank"}
-
 - [Discord community](https://discord.gg/kG35uSHDBc{:target="_blank"})
 - [CodiumAI website](https://codium.ai{:target="_blank"})
 - [Blog](https://www.codium.ai/blog/{:target="_blank"})
 - [Troubleshooting](https://www.codium.ai/blog/technical-faq-and-troubleshooting/{:target="_blank"})
+
+[![Join our Discord community](https://raw.githubusercontent.com/Codium-ai/codiumai-vscode-release/main/media/docs/Joincommunity.png)](https://discord.gg/kG35uSHDBc){:target="_blank"}
