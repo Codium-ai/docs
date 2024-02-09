@@ -1,204 +1,604 @@
 # PR-Agent
 
-![](https://codium.ai/images/pr_agent/logo-dark.png)
-
-## Table of Contents
-- [News and Updates](#news-and-updates)
-- [Overview](#overview)
-- [Example results](#example-results)
-- [Features overview](#features-overview)
-- [Try it now](#try-it-now)
-- [Installation](#installation)
-- [PR-Agent Pro 💎](#pr-agent-pro-)
-- [How it works](#how-it-works)
-- [Why use PR-Agent?](#why-use-pr-agent)
-  
-## News and Updates
-### Jan 21, 2024
-- 💎 Custom suggestions - A new tool, `/custom_suggestions`, was added to PR-Agent Pro. The tool will propose only suggestions that follow specific guidelines defined by the user. 
-See [here](https://github.com/Codium-ai/pr-agent/blob/main/docs/CUSTOM_SUGGESTIONS.md) for more details.
-
-### Jan 17, 2024
-- 💎 Inline file summary - The `describe` tool has a new option, `--pr_description.inline_file_summary`, which allows adding a summary of each file change to the Diffview page. See [here](https://github.com/Codium-ai/pr-agent/blob/main/docs/DESCRIBE.md#inline-file-summary-)
-- The `improve` tool now can present suggestions in a nice collapsible format, which significantly reduces the PR footprint. See [here](https://github.com/Codium-ai/pr-agent/blob/main/docs/IMPROVE.md#summarized-vs-commitable-code-suggestions) for more details. 
-- To accompany the improved interface of the  `improve` tool, we change the [default automation settings](https://github.com/Codium-ai/pr-agent/blob/main/pr_agent/settings/configuration.toml#L116) of our GithupApp to:
-```
-pr_commands = [
-    "/describe --pr_description.add_original_user_description=true --pr_description.keep_original_user_title=true",
-    "/review --pr_reviewer.num_code_suggestions=0",
-    "/improve --pr_code_suggestions.summarize=true",
-]
-```
-Meaning that by default, for each PR the `describe`, `review`, and `improve` tools will be triggered automatically, and the `improve` tool will present the suggestions in a single comment.  
-You can of course overwrite these defaults by adding a `.pr_agent.toml` file to your repo. See [here](https://github.com/Codium-ai/pr-agent/blob/main/Usage.md#working-with-github-app).
-
-
 ## Overview
 
-CodiumAI PR-Agent is an open-source tool to help efficiently review and handle pull requests. It automatically analyzes the pull request and can provide several types of commands:
+CodiumAI GPT-4 powered PR-Agent is an open-source tool to help efficiently review and handle pull requests. 
 
-‣ **Auto Description ([`/describe`](./docs/DESCRIBE.md))**: Automatically generating PR description - title, type, summary, code walkthrough and labels.
-\
-‣ **Auto Review ([`/review`](./docs/REVIEW.md))**: Adjustable feedback about the PR main theme, type, relevant tests, security issues, score, and various suggestions for the PR content.
-\
-‣ **Question Answering ([`/ask ...`](./docs/ASK.md))**: Answering free-text questions about the PR.
-\
-‣ **Code Suggestions ([`/improve`](./docs/IMPROVE.md))**: Committable code suggestions for improving the PR.
-\
-‣ **Update Changelog ([`/update_changelog`](./docs/UPDATE_CHANGELOG.md))**: Automatically updating the CHANGELOG.md file with the PR changes.
-\
-‣ **Find Similar Issue ([`/similar_issue`](./docs/SIMILAR_ISSUE.md))**: Automatically retrieves and presents similar issues.
-\
-‣ **Add Documentation 💎  ([`/add_docs`](./docs/ADD_DOCUMENTATION.md))**: Automatically adds documentation to methods/functions/classes that changed in the PR.
-\
-‣ **Generate Custom Labels 💎 ([`/generate_labels`](./docs/GENERATE_CUSTOM_LABELS.md))**: Automatically suggests custom labels based on the PR code changes.
-\
-‣ **Analyze 💎 ([`/analyze`](./docs/Analyze.md))**: Automatically analyzes the PR, and presents changes walkthrough for each component.
-\
-‣ **Custom Suggestions 💎 ([`/custom_suggestions`](./docs/CUSTOM_SUGGESTIONS.md))**: Automatically generates custom suggestions for improving the PR code, based on specific guidelines defined by the user.
+When added to a repository PR-Agent will automatically analyze submitted Pull Request.
 
+## Try it in a public repository
 
-See the [Installation Guide](./INSTALL.md) for instructions on installing and running the tool on different git platforms.
-
-See the [Usage Guide](./Usage.md) for running the PR-Agent commands via different interfaces, including _CLI_, _online usage_, or by _automatically triggering_ them when a new PR is opened.
-
-See the [Tools Guide](./docs/TOOLS_GUIDE.md) for a detailed description of the different tools (tools are run via the commands).
-
-
-## Example results
-
-[/describe](https://github.com/Codium-ai/pr-agent/pull/530)
-
-![](https://www.codium.ai/images/pr_agent/describe_new_short_main.png)
-
-[/improve](https://github.com/Codium-ai/pr-agent/pull/472#discussion_r1435819374)
-
-![](https://www.codium.ai/images/pr_agent/improve_short_main.png)
-
-[/generate_labels]https://github.com/Codium-ai/pr-agent/pull/530)
-
-![](https://www.codium.ai/images/pr_agent/geneare_custom_labels_main_short.png)
-
-[/reflect_and_review](https://github.com/Codium-ai/pr-agent/pull/78#issuecomment-1639739496)
-
-![](https://www.codium.ai/images/reflect_and_review.gif)
-
-[/ask](https://github.com/Codium-ai/pr-agent/pull/229#issuecomment-1695020538)
-
-![](https://www.codium.ai/images/ask-2.gif)
-
-[/improve](https://github.com/Codium-ai/pr-agent/pull/229#issuecomment-16950249520)
-
-![](https://www.codium.ai/images/improve-2.gif)
-
-
-## Features overview
-`PR-Agent` offers extensive pull request functionalities across various git providers:
-|       |                                             | GitHub | Gitlab | Bitbucket |
-|-------|---------------------------------------------|:------:|:------:|:---------:|
-| TOOLS | Review                                      |   :white_check_mark:    |   :white_check_mark:    |   :white_check_mark:       |
-|       | ⮑ Incremental                              |   :white_check_mark:    |                         |                            |
-|       | ⮑ [SOC2 Compliance](https://github.com/Codium-ai/pr-agent/blob/main/docs/REVIEW.md#soc2-ticket-compliance-) 💎                       |   :white_check_mark:    |   :white_check_mark:    |   :white_check_mark:        |
-|       | Ask                                         |   :white_check_mark:    |   :white_check_mark:    |   :white_check_mark:        |
-|       | Describe                                    |   :white_check_mark:    |   :white_check_mark:    |   :white_check_mark:        |
-|       | ⮑ [Inline file summary](https://github.com/Codium-ai/pr-agent/blob/main/docs/DESCRIBE.md#inline-file-summary-) 💎                       |   :white_check_mark:    |   :white_check_mark:    |   :white_check_mark:        |
-|       | Improve                                     |   :white_check_mark:    |   :white_check_mark:    |   :white_check_mark:        |
-|       | ⮑ Extended                                 |   :white_check_mark:    |   :white_check_mark:    |   :white_check_mark:        |
-|       | [Custom Suggestions](https://github.com/Codium-ai/pr-agent/blob/main/docs/CUSTOM_SUGGESTIONS.md) 💎        |   :white_check_mark:    |   :white_check_mark:    |   :white_check_mark:        |
-|       | Reflect and Review                          |   :white_check_mark:    |   :white_check_mark:    |   :white_check_mark:        |
-|       | Update CHANGELOG.md                         |   :white_check_mark:    |   :white_check_mark:    |   :white_check_mark:        |
-|       | Find Similar Issue                          |   :white_check_mark:    |                         |                             |
-|       | [Add PR Documentation](https://github.com/Codium-ai/pr-agent/blob/main/docs/ADD_DOCUMENTATION.md) 💎                     |   :white_check_mark:    |   :white_check_mark:    |   :white_check_mark:        |
-|       | [Generate Custom Labels](https://github.com/Codium-ai/pr-agent/blob/main/docs/DESCRIBE.md#handle-custom-labels-from-the-repos-labels-page-gem) 💎                   |   :white_check_mark:    |   :white_check_mark:    |         |
-|       | [Analyze PR Components](https://github.com/Codium-ai/pr-agent/blob/main/docs/Analyze.md) 💎                    |   :white_check_mark:    |   :white_check_mark:    |   :white_check_mark:      |
-|       |                                             |        |        |      |
-| USAGE | CLI                                         |   :white_check_mark:    |   :white_check_mark:    |   :white_check_mark:       |
-|       | App / webhook                               |   :white_check_mark:    |   :white_check_mark:    |           |
-|       | Tagging bot                                 |   :white_check_mark:    |        |           | 
-|       | Actions                                     |   :white_check_mark:    |        |           | 
-|       |                                             |        |        |      |
-| CORE  | PR compression                              |   :white_check_mark:    |   :white_check_mark:    |   :white_check_mark:       |
-|       | Repo language prioritization                |   :white_check_mark:    |   :white_check_mark:    |   :white_check_mark:       |
-|       | Adaptive and token-aware file patch fitting |   :white_check_mark:    |   :white_check_mark:    |   :white_check_mark:     |
-|       | Multiple models support |   :white_check_mark:    |   :white_check_mark:    |   :white_check_mark:       | :white_check_mark: |
-|       | Incremental PR review |   :white_check_mark:    |      |      |
-|       | [Static code analysis](https://github.com/Codium-ai/pr-agent/blob/main/docs/Analyze.md) 💎 |   :white_check_mark:    |   :white_check_mark:     |    :white_check_mark:    |
-|       | [Global configuration](https://github.com/Codium-ai/pr-agent/blob/main/Usage.md#global-configuration-file-) 💎 |   :white_check_mark:    |   :white_check_mark:     |    :white_check_mark:    |
-
-
-- 💎 means this feature is available only in [PR-Agent Pro](https://www.codium.ai/pricing/)
-- Support for additional git providers is described in [here](./docs/Full_enviroments.md) 
-
-## Try it now
-
-Try the GPT-4 powered PR-Agent instantly on _your public GitHub repository_. Just mention `@CodiumAI-Agent` and add the desired command in any PR comment. The agent will generate a response based on your command.
-For example, add a comment to any pull request with the following text:
+Mention `@CodiumAI-Agent` and add the desired command in any PR comment. The agent will generate a response based on your command, for example:
 ```
 @CodiumAI-Agent /review
 ```
-and the agent will respond with a review of your PR
+The agent will respond with a review of your PR
 
 ![Review generation process](https://www.codium.ai/images/demo-2.gif)
 
+## Available commands
+Use one of the commands in a PR comment to get more insights.
 
-To set up your own PR-Agent, see the [Installation](#installation) section below.
-Note that when you set your own PR-Agent or use CodiumAI hosted PR-Agent, there is no need to mention `@CodiumAI-Agent ...`. Instead, directly start with the command, e.g., `/ask ...`.
+### Ask
+
+`/ask {your question}` - Answers free-text questions about the PR.
+
+[Example response in Github](https://github.com/Codium-ai/pr-agent/pull/229#issuecomment-1695020538){:target="_blank"}
+
+![](https://www.codium.ai/images/ask-2.gif)
+
+### Changelog
+
+`/changelog` - Generates update to the CHANGELOG.md file listing relevant PR changes.
+
+[Example response in Github](https://github.com/Codium-ai/pr-agent/pull/229#issuecomment-1695020538){:target="_blank"}
+
+### Describe
+
+`/describe` - Generates detailed PR description, title, type, summary, code walkthrough and labels.
+
+[Example response in Github](https://github.com/Codium-ai/pr-agent/pull/530){:target="_blank"}
+
+### Improve
+
+`/improve`: Committable code suggestions for improving the PR.
+
+[Example response in Github](https://github.com/Codium-ai/pr-agent/pull/472#discussion_r1435819374){:target="_blank"}
+
+### Review
+
+`/review` - Generates PR review with test coverage, security issues, score, and insights.
+
+[Example response in Github](https://github.com/Codium-ai/pr-agent/pull/78#issuecomment-1639739496){:target="_blank"}
+
+--- 
+
+## Benefits of PR-Agent
+
+- **Quick and affordable** answer retrieval (~30 seconds). Each tool (review, improve, ask, ...) has a single GPT-4 call, no more.
+- **Any PR size*** can be effectively used in as a context thanks uur compression strategy.
+- **Each command is modular** and can be controlled with shared configuration file. 
+- **Multiple git providers** GitHub, Gitlab, Bitbucket are supported.
+- **Multiple platforms** to use the commands (CLI, GitHub Action, GitHub App, Docker, ...) are supported.
+- **Multiple models** (GPT-4, GPT-3.5, Anthropic, Cohere, Llama2) are supported.
 
 ---
 
-## Installation
-To use your own version of PR-Agent, you first need to acquire two tokens:
-
-1. An OpenAI key from [here](https://platform.openai.com/), with access to GPT-4.
-2. A GitHub personal access token (classic) with the repo scope.
-
-There are several ways to use PR-Agent:
-
-- [Method 1: Use Docker image (no installation required)](INSTALL.md#method-1-use-docker-image-no-installation-required)
-- [Method 2: Run from source](INSTALL.md#method-2-run-from-source)
-- [Method 3: Run as a GitHub Action](INSTALL.md#method-3-run-as-a-github-action)
-- [Method 4: Run as a polling server](INSTALL.md#method-4-run-as-a-polling-server)
-  - Request reviews by tagging your GitHub user on a PR
-- [Method 5: Run as a GitHub App](INSTALL.md#method-5-run-as-a-github-app)
-  - Allowing you to automate the review process on your private or public repositories
-- [Method 6: Deploy as a Lambda Function](INSTALL.md#method-6---deploy-as-a-lambda-function)
-- [Method 7: AWS CodeCommit](INSTALL.md#method-7---aws-codecommit-setup)
-- [Method 8: Run a GitLab webhook server](INSTALL.md#method-8---run-a-gitlab-webhook-server)
-- [Method 9: Run as a Bitbucket Pipeline](INSTALL.md#method-9-run-as-a-bitbucket-pipeline)
-
 ## PR-Agent Pro 💎
-[PR-Agent Pro](https://www.codium.ai/pricing/) is a hosted version of PR-Agent, provided by CodiumAI. It is available for a monthly fee, and provides the following benefits:
-1. **Fully managed** - We take care of everything for you - hosting, models, regular updates, and more. Installation is as simple as signing up and adding the PR-Agent app to your GitHub\BitBucket repo.
-2. **Improved privacy** - No data will be stored or used to train models. PR-Agent Pro will employ zero data retention, and will use an OpenAI account with zero data retention.
-3. **Improved support** - PR-Agent Pro users will receive priority support, and will be able to request new features and capabilities.
-4. **Extra features** -In addition to the benefits listed above, PR-Agent Pro will emphasize more customization, and the usage of static code analysis, in addition to LLM logic, to improve results. It has the following additional features:
-    - [**SOC2 compliance check**](https://github.com/Codium-ai/pr-agent/blob/main/docs/REVIEW.md#soc2-ticket-compliance-)
-    - [**PR documentation**](https://github.com/Codium-ai/pr-agent/blob/main/docs/ADD_DOCUMENTATION.md)
-    - [**Custom labels**](https://github.com/Codium-ai/pr-agent/blob/main/docs/DESCRIBE.md#handle-custom-labels-from-the-repos-labels-page-gem)
-    - [**Global configuration**](https://github.com/Codium-ai/pr-agent/blob/main/Usage.md#global-configuration-file-)
-    - [**Analyze PR components**](https://github.com/Codium-ai/pr-agent/blob/main/docs/Analyze.md)
-    - **Custom Code Suggestions** [WIP]
-    - **Chat on Specific Code Lines** [WIP]
 
+[PR-Agent Pro](https://www.codium.ai/pricing/){:target="_blank"} is a hosted version of PR-Agent, provided by CodiumAI. 
+
+Benefits of PR-Agent Pro:
+
+1. **Fully managed** - We take care of everything for you - hosting, models, regular updates, and more. Installation is as simple as signing up and adding the PR-Agent app to your GitHub\BitBucket repo.
+
+2. **Improved privacy** - No data will be stored or used to train models. PR-Agent Pro will employ zero data retention, and will use an OpenAI account with zero data retention.
+
+3. **Improved support** - PR-Agent Pro users will receive priority support, and will be able to request new features and capabilities.
+
+4. **Extra features** -In addition to the benefits listed above, PR-Agent Pro will emphasize more customization, and the usage of static code analysis, in addition to LLM logic, to improve results. It has the following additional features:
+    - [SOC2 compliance check](https://github.com/Codium-ai/pr-agent/blob/main/docs/REVIEW.md#soc2-ticket-compliance-){:target="_blank"}
+    - [PR documentation](https://github.com/Codium-ai/pr-agent/blob/main/docs/ADD_DOCUMENTATION.md){:target="_blank"}
+    - [Custom labels](https://github.com/Codium-ai/pr-agent/blob/main/docs/DESCRIBE.md#handle-custom-labels-from-the-repos-labels-page-gem){:target="_blank"}
+    - [Global configuration](https://github.com/Codium-ai/pr-agent/blob/main/Usage.md#global-configuration-file-){:target="_blank"}
+    - [Analyze PR components](https://github.com/Codium-ai/pr-agent/blob/main/docs/Analyze.md){:target="_blank"}
+
+---
 
 ## How it works
 
-The following diagram illustrates PR-Agent tools and their flow:
-
 ![PR-Agent Tools](https://codium.ai/images/pr_agent/diagram-v0.9.png)
 
-Check out the [PR Compression strategy](./PR_COMPRESSION.md) page for more details on how we convert a code diff to a manageable LLM prompt
+Check out the [PR Compression strategy](./PR_COMPRESSION.md){:target="_blank"} page for more details on how we convert a code diff to a manageable LLM prompt
 
-## Why use PR-Agent?
+---
 
-A reasonable question that can be asked is: `"Why use PR-Agent? What makes it stand out from existing tools?"`
+## Features support
+PR-Agent offers extensive pull request functionalities across various git providers.
 
-Here are some advantages of PR-Agent:
+💎 marks a feature available only in [PR-Agent Pro](https://www.codium.ai/pricing/){:target="_blank"}
 
-- We emphasize **real-life practical usage**. Each tool (review, improve, ask, ...) has a single GPT-4 call, no more. We feel that this is critical for realistic team usage - obtaining an answer quickly (~30 seconds) and affordably.
-- Our [PR Compression strategy](./PR_COMPRESSION.md)  is a core ability that enables to effectively tackle both short and long PRs.
-- Our JSON prompting strategy enables to have **modular, customizable tools**. For example, the '/review' tool categories can be controlled via the [configuration](pr_agent/settings/configuration.toml) file. Adding additional categories is easy and accessible.
-- We support **multiple git providers** (GitHub, Gitlab, Bitbucket), **multiple ways** to use the tool (CLI, GitHub Action, GitHub App, Docker, ...), and **multiple models** (GPT-4, GPT-3.5, Anthropic, Cohere, Llama2).
+|       |                                             | GitHub | Gitlab | Bitbucket |
+|-------|---------------------------------------------|:------:|:------:|:---------:|
+| TOOLS | Review                                      |   ✔️    |   ✔️    |   ✔️       |
+|       | Incremental                              |   ✔️    |        |            |
+|       | [SOC2 Compliance](https://github.com/Codium-ai/pr-agent/blob/main/docs/REVIEW.md#soc2-ticket-compliance-){:target="_blank"} 💎                       |   ✔️    |   ✔️    |   ✔️        |
+|       | Ask                                         |   ✔️    |   ✔️    |   ✔️        |
+|       | Describe                                    |   ✔️    |   ✔️    |   ✔️        |
+|       | [Inline file summary](https://github.com/Codium-ai/pr-agent/blob/main/docs/DESCRIBE.md#inline-file-summary-){:target="_blank"} 💎                       |   ✔️    |   ✔️    |   ✔️        |
+|       | Improve                                     |   ✔️    |   ✔️    |   ✔️        |
+|       | ⮑ Extended                                 |   ✔️    |   ✔️    |   ✔️        |
+|       | [Custom Suggestions](https://github.com/Codium-ai/pr-agent/blob/main/docs/CUSTOM_SUGGESTIONS.md){:target="_blank"} 💎        |   ✔️    |   ✔️    |   ✔️        |
+|       | Reflect and Review                          |   ✔️    |   ✔️    |   ✔️        |
+|       | Update CHANGELOG.md                         |   ✔️    |   ✔️    |   ✔️        |
+|       | Find Similar Issue                          |   ✔️    |        |             |
+|       | [Add PR Documentation](https://github.com/Codium-ai/pr-agent/blob/main/docs/ADD_DOCUMENTATION.md){:target="_blank"} 💎                     |   ✔️    |   ✔️    |   ✔️        |
+|       | [Generate Custom Labels](https://github.com/Codium-ai/pr-agent/blob/main/docs/DESCRIBE.md#handle-custom-labels-from-the-repos-labels-page-gem){:target="_blank"} 💎                   |   ✔️    |   ✔️    |            |
+|       | [Analyze PR Components](https://github.com/Codium-ai/pr-agent/blob/main/docs/Analyze.md){:target="_blank"} 💎                    |   ✔️    |   ✔️    |   ✔️      |
+|       |                                             |        |        |            |
+| USAGE | CLI                                         |   ✔️    |   ✔️    |   ✔️       |
+|       | App / webhook                               |   ✔️    |   ✔️    |            |
+|       | Tagging bot                                 |   ✔️    |        |            | 
+|       | Actions                                     |   ✔️    |        |            | 
+|       |                                             |        |        |            |
+| CORE  | PR compression                              |   ✔️    |   ✔️    |   ✔️       |
+|       | Repo language prioritization                |   ✔️    |   ✔️    |   ✔️       |
+|       | Adaptive and token-aware file patch fitting |   ✔️    |   ✔️    |   ✔️     |
+|       | Multiple models support                     |   ✔️    |   ✔️    |   ✔️       |
+|       | Incremental PR review                       |   ✔️    |        |            |
+|       | [Static code analysis](https://github.com/Codium-ai/pr-agent/blob/main/docs/Analyze.md){:target="_blank"} 💎 |   ✔️    |   ✔️     |    ✔️    |
+|       | [Global configuration](https://github.com/Codium-ai/pr-agent/blob/main/Usage.md#global-configuration-file-){:target="_blank"} 💎 |   ✔️    |   ✔️     |    ✔️    |
+
+---
+
+## Custom installation process
+
+To get started with PR-Agent quickly, you first need to acquire two tokens:
+
+1. An OpenAI key from [here](https://platform.openai.com/api-keys), with access to GPT-4.
+
+2. A GitHub\GitLab\BitBucket personal access token (classic), with the repo scope. [GitHub from [here](https://github.com/settings/tokens)]
+
+There are several ways to use PR-Agent:
+
+**Locally**
+- [Using Docker image (no installation required)](INSTALL.md#use-docker-image-no-installation-required)
+- [Run from source](INSTALL.md#run-from-source)
+
+**GitHub specific methods**
+- [Run as a GitHub Action](INSTALL.md#run-as-a-github-action)
+- [Run as a polling server](INSTALL.md#run-as-a-polling-server)
+- [Run as a GitHub App](INSTALL.md#run-as-a-github-app)
+- [Deploy as a Lambda Function](INSTALL.md#deploy-as-a-lambda-function)
+- [AWS CodeCommit](INSTALL.md#aws-codecommit-setup)
+
+**GitLab specific methods**
+- [Run a GitLab webhook server](INSTALL.md#run-a-gitlab-webhook-server)
+
+**BitBucket specific methods**
+- [Run as a Bitbucket Pipeline](INSTALL.md#run-as-a-bitbucket-pipeline)
+- [Run on a hosted app](INSTALL.md#run-on-a-hosted-bitbucket-app)
+- [Bitbucket server and data center](INSTALL.md#bitbucket-server-and-data-center)
+---
+
+### Use Docker image
+
+A list of the relevant tools can be found in the [tools guide](./docs/TOOLS_GUIDE.md).
+
+To invoke a tool (for example `review`), you can run directly from the Docker image. Here's how:
+
+- For GitHub:
+```
+docker run --rm -it -e OPENAI.KEY=<your key> -e GITHUB.USER_TOKEN=<your token> codiumai/pr-agent:latest --pr_url <pr_url> review
+```
+
+- For GitLab:
+```
+docker run --rm -it -e OPENAI.KEY=<your key> -e CONFIG.GIT_PROVIDER=gitlab -e GITLAB.PERSONAL_ACCESS_TOKEN=<your token> codiumai/pr-agent:latest --pr_url <pr_url> review
+```
+
+Note: If you have a dedicated GitLab instance, you need to specify the custom url as variable:
+```
+docker run --rm -it -e OPENAI.KEY=<your key> -e CONFIG.GIT_PROVIDER=gitlab -e GITLAB.PERSONAL_ACCESS_TOKEN=<your token> -e GITLAB.URL=<your gitlab instance url> codiumai/pr-agent:latest --pr_url <pr_url> review
+```
+
+- For BitBucket:
+```
+docker run --rm -it -e CONFIG.GIT_PROVIDER=bitbucket -e OPENAI.KEY=$OPENAI_API_KEY -e BITBUCKET.BEARER_TOKEN=$BITBUCKET_BEARER_TOKEN codiumai/pr-agent:latest --pr_url=<pr_url> review
+```
+
+For other git providers, update CONFIG.GIT_PROVIDER accordingly, and check the `pr_agent/settings/.secrets_template.toml` file for the environment variables expected names and values.
+
+---
+
+
+If you want to ensure you're running a specific version of the Docker image, consider using the image's digest:
+```bash
+docker run --rm -it -e OPENAI.KEY=<your key> -e GITHUB.USER_TOKEN=<your token> codiumai/pr-agent@sha256:71b5ee15df59c745d352d84752d01561ba64b6d51327f97d46152f0c58a5f678 --pr_url <pr_url> review
+```
+
+Or you can run a [specific released versions](./RELEASE_NOTES.md) of pr-agent, for example:
+```
+codiumai/pr-agent@v0.9
+```
+
+---
+
+### Run from source
+
+1. Clone this repository:
+
+```
+git clone https://github.com/Codium-ai/pr-agent.git
+```
+
+2. Navigate to the `/pr-agent` folder and install the requirements in your favorite virtual environment:
+
+```
+pip install -e .
+```
+
+*Note: If you get an error related to Rust in the dependency installation then make sure Rust is installed and in your `PATH`, instructions: https://rustup.rs*
+
+3. Copy the secrets template file and fill in your OpenAI key and your GitHub user token:
+
+```
+cp pr_agent/settings/.secrets_template.toml pr_agent/settings/.secrets.toml
+chmod 600 pr_agent/settings/.secrets.toml
+# Edit .secrets.toml file
+```
+
+4. Run the cli.py script:
+
+```
+python3 -m pr_agent.cli --pr_url <pr_url> review
+python3 -m pr_agent.cli --pr_url <pr_url> ask <your question>
+python3 -m pr_agent.cli --pr_url <pr_url> describe
+python3 -m pr_agent.cli --pr_url <pr_url> improve
+python3 -m pr_agent.cli --pr_url <pr_url> add_docs
+python3 -m pr_agent.cli --pr_url <pr_url> generate_labels
+python3 -m pr_agent.cli --issue_url <issue_url> similar_issue
+...
+```
+
+[Optional] Add the pr_agent folder to your PYTHONPATH
+```
+export PYTHONPATH=$PYTHONPATH:<PATH to pr_agent folder>
+```
+
+---
+
+### Run as a GitHub Action
+
+You can use our pre-built Github Action Docker image to run PR-Agent as a Github Action.
+
+1. Add the following file to your repository under `.github/workflows/pr_agent.yml`:
+
+```yaml
+on:
+  pull_request:
+  issue_comment:
+jobs:
+  pr_agent_job:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
+      contents: write
+    name: Run pr agent on every pull request, respond to user comments
+    steps:
+      - name: PR Agent action step
+        id: pragent
+        uses: Codium-ai/pr-agent@main
+        env:
+          OPENAI_KEY: ${{ secrets.OPENAI_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
+** if you want to pin your action to a specific release (v0.7 for example) for stability reasons, use:
+```yaml
+on:
+  pull_request:
+  issue_comment:
+
+jobs:
+  pr_agent_job:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
+      contents: write
+    name: Run pr agent on every pull request, respond to user comments
+    steps:
+      - name: PR Agent action step
+        id: pragent
+        uses: Codium-ai/pr-agent@v0.7
+        env:
+          OPENAI_KEY: ${{ secrets.OPENAI_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
+2. Add the following secret to your repository under `Settings > Secrets and variables > Actions > New repository secret > Add secret`:
+
+```
+Name = OPENAI_KEY
+Secret = <your key>
+```
+
+The GITHUB_TOKEN secret is automatically created by GitHub.
+
+3. Merge this change to your main branch.
+When you open your next PR, you should see a comment from `github-actions` bot with a review of your PR, and instructions on how to use the rest of the tools.
+
+4. You may configure PR-Agent by adding environment variables under the env section corresponding to any configurable property in the [configuration](pr_agent/settings/configuration.toml) file. Some examples:
+```yaml
+      env:
+        # ... previous environment values
+        OPENAI.ORG: "<Your organization name under your OpenAI account>"
+        PR_REVIEWER.REQUIRE_TESTS_REVIEW: "false" # Disable tests review
+        PR_CODE_SUGGESTIONS.NUM_CODE_SUGGESTIONS: 6 # Increase number of code suggestions
+```
+
+---
+
+### Run as a polling server
+
+Request reviews by tagging your GitHub user on a PR
+
+Follow [steps 1-3](#run-as-a-github-action) of the GitHub Action setup.
+
+Run the following command to start the server:
+
+```
+python pr_agent/servers/github_polling.py
+```
+
+---
+
+### Run as a GitHub App
+
+Allowing you to automate the review process on your private or public repositories.
+
+1. Create a GitHub App from the [Github Developer Portal](https://docs.github.com/en/developers/apps/creating-a-github-app).
+
+   - Set the following permissions:
+     - Pull requests: Read & write
+     - Issue comment: Read & write
+     - Metadata: Read-only
+     - Contents: Read-only
+   - Set the following events:
+     - Issue comment
+     - Pull request
+     - Push (if you need to enable triggering on PR update)
+
+2. Generate a random secret for your app, and save it for later. For example, you can use:
+
+```
+WEBHOOK_SECRET=$(python -c "import secrets; print(secrets.token_hex(10))")
+```
+
+3. Acquire the following pieces of information from your app's settings page:
+
+   - App private key (click "Generate a private key" and save the file)
+   - App ID
+
+4. Clone this repository:
+
+```
+git clone https://github.com/Codium-ai/pr-agent.git
+```
+
+5. Copy the secrets template file and fill in the following:
+    ```
+    cp pr_agent/settings/.secrets_template.toml pr_agent/settings/.secrets.toml
+    # Edit .secrets.toml file
+    ```
+   - Your OpenAI key.
+   - Copy your app's private key to the private_key field.
+   - Copy your app's ID to the app_id field.
+   - Copy your app's webhook secret to the webhook_secret field.
+   - Set deployment_type to 'app' in [configuration.toml](./pr_agent/settings/configuration.toml)
+
+> The .secrets.toml file is not copied to the Docker image by default, and is only used for local development.
+> If you want to use the .secrets.toml file in your Docker image, you can add remove it from the .dockerignore file.
+> In most production environments, you would inject the secrets file as environment variables or as mounted volumes.
+> For example, in order to inject a secrets file as a volume in a Kubernetes environment you can update your pod spec to include the following,
+> assuming you have a secret named `pr-agent-settings` with a key named `.secrets.toml`:
+```
+       volumes:
+        - name: settings-volume
+          secret:
+            secretName: pr-agent-settings
+// ...
+       containers:
+// ...
+          volumeMounts:
+            - mountPath: /app/pr_agent/settings_prod
+              name: settings-volume
+```
+
+> Another option is to set the secrets as environment variables in your deployment environment, for example `OPENAI.KEY` and `GITHUB.USER_TOKEN`.
+
+6. Build a Docker image for the app and optionally push it to a Docker repository. We'll use Dockerhub as an example:
+
+```
+docker build . -t codiumai/pr-agent:github_app --target github_app -f docker/Dockerfile
+docker push codiumai/pr-agent:github_app  # Push to your Docker repository
+```
+
+7. Host the app using a server, serverless function, or container environment. Alternatively, for development and
+   debugging, you may use tools like smee.io to forward webhooks to your local machine.
+    You can check [Deploy as a Lambda Function](#deploy-as-a-lambda-function)
+
+8. Go back to your app's settings, and set the following:
+
+   - Webhook URL: The URL of your app's server or the URL of the smee.io channel.
+   - Webhook secret: The secret you generated earlier.
+
+9. Install the app by navigating to the "Install App" tab and selecting your desired repositories.
+
+> **Note:** When running PR-Agent from GitHub App, the default configuration file (configuration.toml) will be loaded.
+> However, you can override the default tool parameters by uploading a local configuration file `.pr_agent.toml`
+> For more information please check out the [USAGE GUIDE](./Usage.md#working-with-github-app)
+---
+
+### Deploy as Lambda Function
+
+1. Follow steps 1-5 of [Method 5](#run-as-a-github-app).
+2. Build a docker image that can be used as a lambda function
+    ```shell
+    docker buildx build --platform=linux/amd64 . -t codiumai/pr-agent:serverless -f docker/Dockerfile.lambda
+   ```
+3. Push image to ECR
+    ```shell
+	docker tag codiumai/pr-agent:serverless <AWS_ACCOUNT>.dkr.ecr.<AWS_REGION>.amazonaws.com/codiumai/pr-agent:serverless
+	docker push <AWS_ACCOUNT>.dkr.ecr.<AWS_REGION>.amazonaws.com/codiumai/pr-agent:serverless
+    ```
+4. Create a lambda function that uses the uploaded image. Set the lambda timeout to be at least 3m.
+5. Configure the lambda function to have a Function URL.
+6. In the environment variables of the Lambda function, specify `AZURE_DEVOPS_CACHE_DIR` to a writable location such as /tmp. (see [link](https://github.com/Codium-ai/pr-agent/pull/450#issuecomment-1840242269))
+7. Go back to steps 8-9 of [Method 5](#run-as-a-github-app) with the function url as your Webhook URL.
+    The Webhook URL would look like `https://<LAMBDA_FUNCTION_URL>/api/v1/github_webhooks`
+
+---
+
+### AWS CodeCommit Setup
+
+Not all features have been added to CodeCommit yet.  As of right now, CodeCommit has been implemented to run the pr-agent CLI on the command line, using AWS credentials stored in environment variables.  (More features will be added in the future.)  The following is a set of instructions to have pr-agent do a review of your CodeCommit pull request from the command line:
+
+1. Create an IAM user that you will use to read CodeCommit pull requests and post comments
+    * Note: That user should have CLI access only, not Console access
+2. Add IAM permissions to that user, to allow access to CodeCommit (see IAM Role example below)
+3. Generate an Access Key for your IAM user
+4. Set the Access Key and Secret using environment variables (see Access Key example below)
+5. Set the `git_provider` value to `codecommit` in the `pr_agent/settings/configuration.toml` settings file
+6. Set the `PYTHONPATH` to include your `pr-agent` project directory
+    * Option A: Add `PYTHONPATH="/PATH/TO/PROJECTS/pr-agent` to your `.env` file
+    * Option B: Set `PYTHONPATH` and run the CLI in one command, for example:
+        * `PYTHONPATH="/PATH/TO/PROJECTS/pr-agent python pr_agent/cli.py [--ARGS]`
+
+#### IAM Role Example
+
+Example IAM permissions to that user to allow access to CodeCommit:
+
+* Note: The following is a working example of IAM permissions that has read access to the repositories and write access to allow posting comments
+* Note: If you only want pr-agent to review your pull requests, you can tighten the IAM permissions further, however this IAM example will work, and allow the pr-agent to post comments to the PR
+* Note: You may want to replace the `"Resource": "*"` with your list of repos, to limit access to only those repos
+
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "codecommit:BatchDescribe*",
+                "codecommit:BatchGet*",
+                "codecommit:Describe*",
+                "codecommit:EvaluatePullRequestApprovalRules",
+                "codecommit:Get*",
+                "codecommit:List*",
+                "codecommit:PostComment*",
+                "codecommit:PutCommentReaction",
+                "codecommit:UpdatePullRequestDescription",
+                "codecommit:UpdatePullRequestTitle"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+```
+
+#### Access Key and Secret
+
+Example setting the Access Key and Secret using environment variables
+
+```sh
+export AWS_ACCESS_KEY_ID="XXXXXXXXXXXXXXXX"
+export AWS_SECRET_ACCESS_KEY="XXXXXXXXXXXXXXXX"
+export AWS_DEFAULT_REGION="us-east-1"
+```
+
+#### CLI Example
+
+After you set up AWS CodeCommit using the instructions above, here is an example CLI run that tells pr-agent to **review** a given pull request.
+(Replace your specific PYTHONPATH and PR URL in the example)
+
+```sh
+PYTHONPATH="/PATH/TO/PROJECTS/pr-agent" python pr_agent/cli.py \
+  --pr_url https://us-east-1.console.aws.amazon.com/codesuite/codecommit/repositories/MY_REPO_NAME/pull-requests/321 \
+  review
+```
+
+---
+
+### Run a GitLab webhook
+
+1. From the GitLab workspace or group, create an access token. Enable the "api" scope only.
+2. Generate a random secret for your app, and save it for later. For example, you can use:
+
+```
+WEBHOOK_SECRET=$(python -c "import secrets; print(secrets.token_hex(10))")
+```
+3. Follow the instructions to build the Docker image, setup a secrets file and deploy on your own server from [Method 5](#run-as-a-github-app) steps 4-7.
+4. In the secrets file, fill in the following:
+    - Your OpenAI key.
+    - In the [gitlab] section, fill in personal_access_token and shared_secret. The access token can be a personal access token, or a group or project access token.
+    - Set deployment_type to 'gitlab' in [configuration.toml](./pr_agent/settings/configuration.toml)
+5. Create a webhook in GitLab. Set the URL to the URL of your app's server. Set the secret token to the generated secret from step 2.
+In the "Trigger" section, check the ‘comments’ and ‘merge request events’ boxes.
+6. Test your installation by opening a merge request or commenting or a merge request using one of CodiumAI's commands.
+
+
+
+### Run as a Bitbucket Pipeline
+
+
+You can use the Bitbucket Pipeline system to run PR-Agent on every pull request open or update.
+
+1. Add the following file in your repository bitbucket_pipelines.yml
+
+```yaml
+pipelines:
+    pull-requests:
+      '**':
+        - step:
+            name: PR Agent Review
+            image: python:3.10
+            services:
+              - docker
+            script:
+              - docker run -e CONFIG.GIT_PROVIDER=bitbucket -e OPENAI.KEY=$OPENAI_API_KEY -e BITBUCKET.BEARER_TOKEN=$BITBUCKET_BEARER_TOKEN codiumai/pr-agent:latest --pr_url=https://bitbucket.org/$BITBUCKET_WORKSPACE/$BITBUCKET_REPO_SLUG/pull-requests/$BITBUCKET_PR_ID review
+```
+
+2. Add the following secure variables to your repository under Repository settings > Pipelines > Repository variables.
+OPENAI_API_KEY: `<your key>`
+BITBUCKET_BEARER_TOKEN: `<your token>`
+
+You can get a Bitbucket token for your repository by following Repository Settings -> Security -> Access Tokens.
+
+Note that comments on a PR are not supported in Bitbucket Pipeline.
+
+
+### CodiumAI-hosted Bitbucket app
+
+Please contact [support@codium.ai](mailto:support@codium.ai) or visit [CodiumAI pricing page](https://www.codium.ai/pricing/) if you're interested in a hosted BitBucket app solution that provides full functionality including PR reviews and comment handling. It's based on the [bitbucket_app.py](https://github.com/Codium-ai/pr-agent/blob/main/pr_agent/git_providers/bitbucket_provider.py) implementation.
+
+
+### Bitbucket Server and Data Center
+
+Login into your on-prem instance of Bitbucket with your service account username and password.
+Navigate to `Manage account`, `HTTP Access tokens`, `Create Token`.
+Generate the token and add it to .secret.toml under `bitbucket_server` section
+
+```toml
+[bitbucket_server]
+bearer_token = "<your key>"
+```
+
+### Run as CLI
+
+Modify `configuration.toml`:
+
+```toml
+git_provider="bitbucket_server"
+```
+
+and pass the Pull request URL:
+```shell
+python cli.py --pr_url https://git.onpreminstanceofbitbucket.com/projects/PROJECT/repos/REPO/pull-requests/1 review
+```
+
+### Run as service
+
+To run pr-agent as webhook, build the docker image:
+```
+docker build . -t codiumai/pr-agent:bitbucket_server_webhook --target bitbucket_server_webhook -f docker/Dockerfile
+docker push codiumai/pr-agent:bitbucket_server_webhook  # Push to your Docker repository
+```
+
+Navigate to `Projects` or `Repositories`, `Settings`, `Webhooks`, `Create Webhook`.
+Fill the name and URL, Authentication None select the Pull Request Opened checkbox to receive that event as webhook.
+
+The URL should end with `/webhook`, for example: https://domain.com/webhook
 
 
 ## Data privacy
@@ -211,10 +611,9 @@ You will also benefit from an OpenAI account with zero data retention.
 
 ## Links
 
-[![Join our Discord community](https://raw.githubusercontent.com/Codium-ai/codiumai-vscode-release/main/media/docs/Joincommunity.png)](https://discord.gg/kG35uSHDBc)
+[![Join our Discord community](https://raw.githubusercontent.com/Codium-ai/codiumai-vscode-release/main/media/docs/Joincommunity.png)](https://discord.gg/kG35uSHDBc){:target="_blank"}
 
-- Discord community: https://discord.gg/kG35uSHDBc
-- CodiumAI site: https://codium.ai
-- Blog: https://www.codium.ai/blog/
-- Troubleshooting: https://www.codium.ai/blog/technical-faq-and-troubleshooting/
-- Support: support@codium.ai
+- [Discord community](https://discord.gg/kG35uSHDBc{:target="_blank"})
+- [CodiumAI website](https://codium.ai{:target="_blank"})
+- [Blog](https://www.codium.ai/blog/{:target="_blank"})
+- [Troubleshooting](https://www.codium.ai/blog/technical-faq-and-troubleshooting/{:target="_blank"})

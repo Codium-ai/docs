@@ -20,10 +20,9 @@ CodiumAI’s first tool is an IDE extension that interacts with the developer to
 
 ## Links
 
-[![Join our Discord community](https://raw.githubusercontent.com/Codium-ai/codiumai-vscode-release/main/media/docs/Joincommunity.png)](https://discord.gg/kG35uSHDBc)
+[![Join our Discord community](https://raw.githubusercontent.com/Codium-ai/codiumai-vscode-release/main/media/docs/Joincommunity.png)](https://discord.gg/kG35uSHDBc){:target="_blank"}
 
-- Discord community: https://discord.gg/kG35uSHDBc
-- CodiumAI site: https://codium.ai
-- Blog: https://www.codium.ai/blog/
-- Troubleshooting: https://www.codium.ai/blog/technical-faq-and-troubleshooting/
-- Support: support@codium.ai
+- [Discord community](https://discord.gg/kG35uSHDBc{:target="_blank"})
+- [CodiumAI website](https://codium.ai{:target="_blank"})
+- [Blog](https://www.codium.ai/blog/{:target="_blank"})
+- [Troubleshooting](https://www.codium.ai/blog/technical-faq-and-troubleshooting/{:target="_blank"})
