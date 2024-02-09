@@ -5,7 +5,7 @@ nav:
   - 'pragent/index.md'
   - 'codiumate/index.md'
   - 'alphacodium/index.md'
-  - 'releases/index.md'
+  - 'changelog/index.md'
 
 theme:
   logo: assets/logo.svg

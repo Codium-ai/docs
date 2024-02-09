@@ -1,24 +1,22 @@
-# New Releases
+# Changelog
 
 ## Jan 21, 2024
-### PR-Agent
+
+**PR-Agent**
+
 - Custom suggestions - A new tool, `/custom_suggestions`, was added to PR-Agent Pro. The tool will propose only suggestions that follow specific guidelines defined by the user. 
 See [here](https://github.com/Codium-ai/pr-agent/blob/main/docs/CUSTOM_SUGGESTIONS.md) for more details.
 
-### Codiumate
-#### VSCode
-- An update goers here if no update remove the section
+**Codiumate**
 
-#### JetBrains
-- An update goers here if no update remove the section
-
-### AlphaCodium
-- An update goers here if no update remove the section
+- some other update
 
 ---
 
 ## Jan 17, 2024
-### PR-Agent
+
+**PR-Agent**
+
 - Inline file summary - The `describe` tool has a new option, `--pr_description.inline_file_summary`, which allows adding a summary of each file change to the Diffview page. See [here](https://github.com/Codium-ai/pr-agent/blob/main/docs/DESCRIBE.md#inline-file-summary-)
 - The `improve` tool now can present suggestions in a nice collapsible format, which significantly reduces the PR footprint. See [here](https://github.com/Codium-ai/pr-agent/blob/main/docs/IMPROVE.md#summarized-vs-commitable-code-suggestions) for more details. 
 - To accompany the improved interface of the  `improve` tool, we change the [default automation settings](https://github.com/Codium-ai/pr-agent/blob/main/pr_agent/settings/configuration.toml#L116) of our GithupApp to:
