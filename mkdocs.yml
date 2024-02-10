@@ -45,12 +45,18 @@ plugins:
 
 extra:
   social:
-    - icon: fontawesome/brands/github-alt
-      link: https://github.com/james-willett
-    - icon: fontawesome/brands/twitter
-      link: https://twitter.com/TheJamesWillett
+    - icon: fontawesome/brands/github
+      link: https://github.com/Codium-ai
+    - icon: fontawesome/brands/discord
+      link: https://discord.com/invite/SgSxuQ65GF
+    - icon: fontawesome/brands/youtube
+      link: https://www.youtube.com/@Codium-AI
     - icon: fontawesome/brands/linkedin
-      link: https://www.linkedin.com/in/willettjames/
+      link: https://www.linkedin.com/company/codiumai
+    - icon: fontawesome/brands/twitter
+      link: https://twitter.com/CodiumAI
+    - icon: fontawesome/brands/instagram
+      link: https://www.instagram.com/codiumai/
 
 markdown_extensions:
   - pymdownx.highlight:
