@@ -12,11 +12,35 @@ CodiumAI’s first tool is an IDE extension that interacts with the developer to
 
 ## Supported IDEs
 
-* [VSCode](https://www.codium.ai/install/vs-code/){:target="_blank"}
-* [IntelliJ](https://www.codium.ai/install/intellij/){:target="_blank"}
-* [WebStorm](https://www.codium.ai/install/webstorm/){:target="_blank"}
 * [CLion](https://www.codium.ai/install/clion/){:target="_blank"}
+* [IntelliJ](https://www.codium.ai/install/intellij/){:target="_blank"}
 * [PyCharm](https://www.codium.ai/install/pycharm/){:target="_blank"}
+* [WebStorm](https://www.codium.ai/install/webstorm/){:target="_blank"}
+* [VSCode](https://www.codium.ai/install/vs-code/){:target="_blank"}
+
+## Supported languages
+
+[Features support table](https://www.codium.ai/programming-language-support/){:target="_blank"}
+
+* C++
+* C#
+* Go
+* Java
+* JavaScript
+* Kotlin
+* PHO
+* Python
+* Swift
+* TypeScript
+
+
+## Supported git providers
+
+* Azure
+* AWS
+* BitBucket
+* GitHub
+* GitLab
 
 ## Links
 - [Discord community](https://discord.gg/kG35uSHDBc{:target="_blank"})

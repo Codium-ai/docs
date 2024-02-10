@@ -1,25 +1,13 @@
 # AlphaCodium
 
-> Code Generation with AlphaCodium: From Prompt Engineering to Flow Engineering
+Code Generation with AlphaCodium: From Prompt Engineering to Flow Engineering.
 
-[Paper](https://arxiv.org/abs/2401.08500) |
-[Dataset](https://huggingface.co/datasets/talrid/CodeContests_valid_and_test_AlphaCodium/blob/main/codecontests_valid_and_test_processed_alpha_codium.zip)
+[Paper](https://arxiv.org/abs/2401.08500){:target="_blank"} |
+[Dataset](https://huggingface.co/datasets/talrid/CodeContests_valid_and_test_AlphaCodium/blob/main/codecontests_valid_and_test_processed_alpha_codium.zip){:target="_blank"}
 
-Official Implementation
+**Official Implementation:**
 
 Tal Ridnik, Dedy Kredo, Itamar Friedman
-
-CodiumAI
-
-## Table of Contents
-- [Abstract](#abstract)
-- [Installation](#installation)
-- [How to run](#how-to-run)
-- [Technical Q&A](#technical-qa)
-- [Broader Applicability](#broader-applicability)
-- [Example Problem](#example-problem)
-- [Acknowledgments](#acknowledgments)
-- [Citation](#citation)
 
 ## Abstract
 
@@ -32,20 +20,20 @@ On the validation set, for example, GPT-4 accuracy (pass@5) increased from 19% w
 
 Many of the principles and best practices we acquired in this work, we believe, are broadly applicable to general code generation tasks.
 
-![](https://github.com/Codium-ai/AlphaCodium/tree/main/pics/proposed_flow.png)
-![](https://github.com/Codium-ai/AlphaCodium/tree/main/pics/iterations.png)
+![Pre-processedf flow](https://github.com/Codium-ai/AlphaCodium/blob/main/pics/proposed_flow.png?raw=true){:target="_blank"}
+![Iterations](https://github.com/Codium-ai/AlphaCodium/blob/main/pics/iterations.png?raw=true){:target="_blank"}
 
 ## Installation
 
-(1) setup a virtual environment and run: `pip install -r requirements.txt`
+1. setup a virtual environment and run: `pip install -r requirements.txt`
 
-(2) Duplicate the file `alpha_codium/settings/.secrets_template.toml`, rename it as `.secrets.toml`, and fill in your OpenAI API key:
+2. Duplicate the file `alpha_codium/settings/.secrets_template.toml`, rename it as `.secrets.toml`, and fill in your OpenAI API key:
 ```
 [openai]
 key = "..."
 ```
 
-(3) Download the processed CodeContest validation and test dataset from [hugging face](https://huggingface.co/datasets/talrid/CodeContests_valid_and_test_AlphaCodium/blob/main/codecontests_valid_and_test_processed_alpha_codium.zip), extract the zip file, and placed the extracted folder in the root of the project.
+3. Download the processed CodeContest validation and test dataset from [hugging face](https://huggingface.co/datasets/talrid/CodeContests_valid_and_test_AlphaCodium/blob/main/codecontests_valid_and_test_processed_alpha_codium.zip){:target="_blank"}, extract the zip file, and placed the extracted folder in the root of the project.
 
 ## How to run
 
@@ -62,16 +50,18 @@ python -m alpha_codium.solve_problem \
 --problem_number 0
 ```
 - The `dataset_name` is the path to the dataset folder you downloaded in the installation step.
+
 - Note that the validation set contains 117 problems, and the test set contains 165 problems, so the `problem_number` parameter should be accordingly (zero-based)
+
 - The `split_name` can be either `valid` or `test`.
+
 - The following sections in the configuration file: 
-`solve`, `self_reflection`,`possible_solutions`,`generate_ai_tests`,`initial_code_generation`,`public_tests`, `ai_tests`  
+`solve`, `self_reflection`,`possible_solutions`,`generate_ai_tests`,`initial_code_generation`,`public_tests`, `ai_tests` 
 enable to adjust possible configurations for the different stages of the flow.
+
 - Each run logs the results to a file named `alpha_codium/example.log`. Reviewing the log file is a good way to understand what is going on in each stage of the flow.
 
-Example problem (test set, problem number 12):
-
-![](https://github.com/Codium-ai/AlphaCodium/tree/main/pics/example_problem.png)
+![Example problem (test set, problem number 12)](https://github.com/Codium-ai/AlphaCodium/blob/main/pics/example_problem.png?raw=true)
 
 ### Solving the entire dataset
 to solve the entire dataset with AlphaCodium, from the root folder run:
@@ -102,20 +92,24 @@ python -m alpha_codium.evaluate_dataset\
 Aggregating some technical questions we received about this project:
 ___
 **Q: How much time did you spend on "prompt engineering" compared to "flow engineering"?**
+
 **A:** Structured output almost completely eliminates the need for simple prompt engineering.
 We estimate that ~95% of the time we did more high-level design, reasoning, and injecting data at the correct places, ..., a.k.a. "flow engineering".
 ___
 
 **Q: How do you know that there wasn't a data leakage?** 
+
 **A:** The test set of CodeContests dataset comprises problems published after September 2021, while the GPT-4 model variant we used (gpt-4-0613) has a data cutoff of September 2021. Hence, there is no data leakage for GPT4, on the test set.
-For other models like DeepSeek, we cannot be sure. However, note that our [main result](https://github.com/Codium-ai/AlphaCodium/tree/main/pics/comparison.png) is a comparison of "direct prompt" vs. "AlphaCodium flow". Data leakage would help both approaches, so the relative improvement of AlphaCodium flow is still valid.
+For other models like DeepSeek, we cannot be sure. However, note that our ![main result](https://github.com/Codium-ai/AlphaCodium/blob/main/pics/comparison.png?raw=true) is a comparison of "direct prompt" vs. "AlphaCodium flow". Data leakage would help both approaches, so the relative improvement of AlphaCodium flow is still valid.
 ___
 
 **Q: Is this project relevant only to specific programming languages?**
+
 **A:** No. The proposed flow is language agnostic. We generated solutions in Python, but the flow can be applied to any language.
 ___
 
 **Q: How did you manage the context window?** 
+
 **A:** We used models with a context window of 8192 tokens, and we did not encounter cases where it did not suffice.
 However, we clearly observed that as the context we used in practice grows larger (let's say, above 4000 tokens), the model starts to "ignore" some of the information in the context. Hence, there is a clear tradeoff:
 - Injecting the results of previous stages into the context, may help the model to generate better code.
@@ -123,27 +117,33 @@ However, we clearly observed that as the context we used in practice grows large
 ___
 
 **Q: Is this work "realistic" in terms of the number of LLM calls?** 
-**A:** In comparison to AlphaCode, we do four orders of magnitude (!) fewer [calls](https://github.com/Codium-ai/AlphaCodium/tree/main/pics/computational_effort.png) (per solution AlphaCodium does 15-20 calls).
+
+**A:** In comparison to AlphaCode, we do four orders of magnitude (!) fewer ![calls](https://github.com/Codium-ai/AlphaCodium/blob/main/pics/computational_effort.png?raw=true) (per solution AlphaCodium does 15-20 calls).
 Yet we acknowledge that for some applications, this may still be too much, and more optimizations are needed. We however believe that many of the ideas and principles we acquired in this work are broadly applicable, even when the number of calls is further limited.
 ___
 **Q: Why do you iterate only on the generated code, and not on the AI-generated tests?**
-**A:** For code problems in CodeContests, the tests are a list of input-output pairs. Hence, you don't really learn anything new when you "fix" a test - you just change its output to the prediction of the generated code. Instead of fixing tests, we preferred to always try and fix the code, while using "test anchors". (see the [paper](https://arxiv.org/abs/2401.08500) for more details).
+
+**A:** For code problems in CodeContests, the tests are a list of input-output pairs. Hence, you don't really learn anything new when you "fix" a test - you just change its output to the prediction of the generated code. Instead of fixing tests, we preferred to always try and fix the code, while using "test anchors". (see the [paper](https://arxiv.org/abs/2401.08500){:target="_blank"} for more details).
 However, for other code generation tasks, where the tests are more complex and contain runnable code, iterating on the tests, in addition to iterating on the generated code, may be beneficial.
 
 
 ## Broader Applicability
 While this work presents results on CodeContests dataset, we believe that it has a broader applicability.
 
-First and foremost, we feel that the proposed AlphaCodium [flow](https://github.com/Codium-ai/AlphaCodium/tree/main/pics/proposed_flow.png), with reasonable adjustments, can be used as a more general framework for other code generation tasks.
+First and foremost, we feel that the proposed AlphaCodium ![flow](https://github.com/Codium-ai/AlphaCodium/blob/main/pics/proposed_flow.png?raw=true), with reasonable adjustments, can be used as a more general framework for other code generation tasks.
 
 Secondly, many of the design concepts, principles, and tricks we acquired in this work are broadly applicable as-is to any general code generation tasks. For example:
 - **YAML Structured output**: asking the model to generate an output in YAML format, equivalent to a given Pydantic class
+
 - **Semantic reasoning via bullet points analysis**: Bullet points analysis encourages an in-depth understanding of the problem, and forces the model to divide the output into logical semantic sections, leading to improved results
+
 - **LLMs do better when generating a modular code**: when asking the model to: `divide the generated code into small sub-functions, with meaningful names and functionality`, we observe a better-produced code, with fewer bugs, and higher success rates for the iterative fixing stages.
+
 - **Soft decisions with double validation**: with a double validation process, we add an extra step where, given the generated output, the model is asked to re-generate the same output, but correct it if needed
+
 - **Leave room for exploration**: since the model can be wrong, it’s better to avoid irreversible decisions, and leave room for exploration and code iterations with different possible solutions
 
-The list above is partial. See the [paper](https://arxiv.org/abs/2401.08500) for more details. The code provided [in this repo](./alpha_codium/settings) can be used as a reference for better understanding the proposed concepts, and for applying them to other code generation tasks.
+The list above is partial. See the [paper](https://arxiv.org/abs/2401.08500){:target="_blank"} for more details. The code provided [in this repo](./alpha_codium/settings) can be used as a reference for better understanding the proposed concepts, and for applying them to other code generation tasks.
 
 
 ## Example Problem
