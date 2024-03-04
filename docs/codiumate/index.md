@@ -2,6 +2,55 @@
 
 **CodiumAI** analyzes your code and generates meaningful tests to catch bugs before you ship. With CodiumAI, you can easily and quickly create comprehensive test suites that help you ensure the reliability and correctness of your software. It supports all languages!
 
+## Installation
+
+## Context management
+
+### File mode
+### Workspace mode
+
+## Commands
+
+### File mode
+
+#### Ask
+#### Docstring
+#### Enhance
+#### Improve
+#### Test
+
+### Workspace mode
+
+#### Ask
+#### Changelog
+#### Commit
+#### Describe
+#### Docstring
+#### Improve
+#### Issues
+#### Recap
+#### Review
+
+### Test Suite
+
+#### How to use
+- lens
+- right click
+- command palette
+- codium button JB
+- chat
+#### Configuration
+#### Reference test
+#### Behaviors
+#### Running tests
+#### Context preview
+
+## Guides
+
+### Threads
+
+
+
 ---
 
 ## Links
